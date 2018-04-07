@@ -1,15 +1,23 @@
-# issue a GET request to see the (empty) list of tasks
+# issues a GET request to retrieve tasks with no JWT
+# HTTP 403 Forbidden status is expected
 curl http://localhost:8080/tasks
 
-# issue a POST request to create a new task
+# registers a new user
 curl -H "Content-Type: application/json" -X POST -d '{
-    "description": "Buy some milk(shake)"
-}'  http://localhost:8080/tasks
+    "username": "admin",
+    "password": "password"
+}' http://localhost:8080/users/signup
 
-# issue a PUT request to update the recently created task
-curl -H "Content-Type: application/json" -X PUT -d '{
-    "description": "Buy some milk"
-}'  http://localhost:8080/tasks/1
+# logs into the application (JWT is generated)
+curl -i -H "Content-Type: application/json" -X POST -d '{
+    "username": "admin",
+    "password": "password"
+}' http://localhost:8080/login
 
-# issue a DELETE request to remove the existing task
-curl -X DELETE http://localhost:8080/tasks/1
+# issue a POST request, passing the JWT, to create a task
+# remember to replace xxx.yyy.zzz with the JWT retrieved above
+curl -H "Content-Type: application/json" \
+-H "Authorization: Bearer  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUyMzk4MjEyMX0.pSNZvKQ9_ZWKXbeyLdVxdjZE66jggU6lr7GCEOux5kTdVFQZmmRFOD7KZDE_BDp8eu50HuUbutmaaVpatKhGUQ" \
+-X POST -d '{
+    "description": "Buy watermelon"
+}'  http://localhost:8080/taskscurl -H "Content-Type: application/json" \
