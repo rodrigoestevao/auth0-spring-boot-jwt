@@ -30,21 +30,26 @@ import static com.auth0.samples.authapi.security.SecurityConstants.EXPIRATION_TI
 import static com.auth0.samples.authapi.security.SecurityConstants.HEADER_STRING;
 import static com.auth0.samples.authapi.security.SecurityConstants.SECRET;
 import static com.auth0.samples.authapi.security.SecurityConstants.TOKEN_PREFIX;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import com.auth0.samples.authapi.exception.AccessDeniedException;
 import com.auth0.samples.authapi.user.ApplicationUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -56,6 +61,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author rodrigo
  */
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    
     private AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -87,7 +93,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS512, SECRET)
             .compact();
-
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + token);
+        
+        response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

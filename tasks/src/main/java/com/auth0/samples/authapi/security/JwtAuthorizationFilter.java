@@ -27,28 +27,34 @@
 package com.auth0.samples.authapi.security;
 
 
-import io.jsonwebtoken.Jwts;
+import static com.auth0.samples.authapi.security.SecurityConstants.HEADER_STRING;
+import static com.auth0.samples.authapi.security.SecurityConstants.SECRET;
+import static com.auth0.samples.authapi.security.SecurityConstants.TOKEN_PREFIX;
+import java.io.IOException;
+import java.util.HashSet;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashSet;
+import com.auth0.samples.authapi.exception.InvalidHeaderException;
 
-import static com.auth0.samples.authapi.security.SecurityConstants.HEADER_STRING;
-import static com.auth0.samples.authapi.security.SecurityConstants.SECRET;
-import static com.auth0.samples.authapi.security.SecurityConstants.TOKEN_PREFIX;
+import io.jsonwebtoken.Jwts;
 
 /**
  * @author rodrigo
  *
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
     /**
      * Constructor
@@ -66,7 +72,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
         String header = request.getHeader(HEADER_STRING);
         
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-            //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied");
+        	throw new InvalidHeaderException(HEADER_STRING);
         } else {
             UsernamePasswordAuthenticationToken authentication = this.getAuthentication(request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -83,17 +89,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
             // parse the token
             String user = Jwts.parser()
                 .setSigningKey(SECRET)
-                .parseClaimsJwt(header.replace(TOKEN_PREFIX, ""))
+                .parseClaimsJws(header.replace(TOKEN_PREFIX, ""))
                 .getBody()
                 .getSubject();
 
             if (user != null) {
                 token = new UsernamePasswordAuthenticationToken(user, null, new HashSet<>());
             } else {
-                // TODO: I strongly believe that something should be done here, but for now just add some log to keep the things tracked
+            	LOGGER.error("The authentication token does not have a valid user.");
             }
         } else {
-            // TODO: Same thing here. For now just add some log to keep the things tracked
+        	LOGGER.error("The {} header is not present or is invalid", HEADER_STRING);
         }
         return token;
     }

@@ -20,4 +20,4 @@ curl -H "Content-Type: application/json" \
 -H "Authorization: Bearer  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUyMzk4MjEyMX0.pSNZvKQ9_ZWKXbeyLdVxdjZE66jggU6lr7GCEOux5kTdVFQZmmRFOD7KZDE_BDp8eu50HuUbutmaaVpatKhGUQ" \
 -X POST -d '{
     "description": "Buy watermelon"
-}'  http://localhost:8080/taskscurl -H "Content-Type: application/json" \
+}'  http://localhost:8080/tasks
