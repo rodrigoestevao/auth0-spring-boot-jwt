@@ -17,7 +17,7 @@ curl -i -H "Content-Type: application/json" -X POST -d '{
 # issue a POST request, passing the JWT, to create a task
 # remember to replace xxx.yyy.zzz with the JWT retrieved above
 curl -H "Content-Type: application/json" \
--H "Authorization: Bearer  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUyMzk4MjEyMX0.pSNZvKQ9_ZWKXbeyLdVxdjZE66jggU6lr7GCEOux5kTdVFQZmmRFOD7KZDE_BDp8eu50HuUbutmaaVpatKhGUQ" \
+-H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUyNDA1Mzg0NX0.KSHdPXhFFXkIrm7CLSeLL-7v9fRcBByb-jrWsUZvEHn0jEAqQ5kaWrwc8y0qUc1J6H3u0c_vjTkrWYfVACB25w" \
 -X POST -d '{
     "description": "Buy watermelon"
 }'  http://localhost:8080/tasks
